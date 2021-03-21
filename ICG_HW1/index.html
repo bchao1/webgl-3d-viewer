@@ -7,42 +7,147 @@
 <script type="text/javascript" src="./js/glMatrix-0.9.5.min.js"></script>
 <script type="text/javascript" src="./js/webgl-utils.js"></script>
 
-<!-- 
-    TODO HERE: 
-    modify fragment shader or write another one
-    to implement flat, gouraud and phong shading
- -->
-<script id="fragmentShader" type="fragment">
+
+<script id="fragmentShaderFlat" type="fragment">
+    #extension GL_OES_standard_derivatives : enable
+
     precision mediump float;
 
     varying vec4 fragcolor;
+    varying vec3 vertexViewPosition;
 
     void main(void) {
-        gl_FragColor = fragcolor;
+        vec3 U = dFdx(vertexViewPosition);
+        vec3 V = dFdy(vertexViewPosition);
+        vec3 N =  normalize(cross(U, V));
+        
+        // ambient lighting
+        float ambientIntensity = 0.3;
+        vec3 ambientColor = fragcolor.rgb * ambientIntensity;
+
+        // directional lighting
+        vec3 directionalLightColor = vec3(1, 1, 1);
+        vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
+        float directionalIntensity = max(dot(N, directionalVector), 0.0);
+        vec3 directionalColor = directionalLightColor * fragcolor.rgb * directionalIntensity;
+
+        vec3 finalColor = ambientColor + directionalColor;
+
+        gl_FragColor = vec4(finalColor, 1.0);
     }
 </script>
 
-<!-- 
-    TODO HERE:
-    modify vertex shader or write another one
-    to implement flat, gouraud and phong shading
 
-    NOTE:
-    if you want to write bonus part (texture mapping),
-    only Teapot.json has extra attribute "vertexTextureCoords"
-    which is used for texture mappping.
- -->
-<script id="vertexShader" type="vertex">
+<script id="vertexShaderFlat" type="vertex">
     attribute vec3 aVertexPosition;
     attribute vec3 aFrontColor;
 
     uniform mat4 uMVMatrix;
     uniform mat4 uPMatrix;
-
+    
 	varying vec4 fragcolor;
+    varying vec3 vertexViewPosition;
 
     void main(void) {
-        fragcolor = vec4(aFrontColor.rgb, 1.0);
+        //fragcolor = vec4(aFrontColor.rgb, 1.0);
+        fragcolor = vec4(1, 0, 0, 1.0);
+        vertexViewPosition = (uMVMatrix * vec4(aVertexPosition, 1.0)).xyz;
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+    }
+</script>
+
+<!--
+    Gouraud Shading: Per-vertex shading
+-->
+
+<script id="fragmentShaderGouraud" type="fragment">
+    #extension GL_OES_standard_derivatives : enable
+
+    precision mediump float;
+
+    varying vec3 fragcolor;
+
+    void main(void) {
+        
+        gl_FragColor = vec4(fragcolor, 1.0);
+    }
+</script>
+
+<script id="vertexShaderGouraud" type="vertex">
+    attribute vec3 aVertexPosition;
+    attribute vec3 aFrontColor;
+    attribute vec3 aVertexNormal;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+    
+	varying vec3 fragcolor;
+    varying vec3 vertexViewPosition;
+
+    void main(void) {
+        vertexViewPosition = (uMVMatrix * vec4(aVertexPosition, 1.0)).xyz;
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        
+        // ambient lighting
+        float ambientIntensity = 0.3;
+        vec3 ambientColor = aFrontColor * ambientIntensity;
+
+        // directional lighting
+        vec3 directionalLightColor = vec3(1, 1, 1);
+        vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
+        //vec3 vertexViewNormal = (uMVMatrix * vec4(aVertexNormal, 1.0)).xyz;
+        float directionalIntensity = max(dot(aVertexNormal, directionalVector), 0.0);
+        vec3 directionalColor = directionalLightColor * aFrontColor * directionalIntensity;
+
+        fragcolor = ambientColor + directionalColor;
+    }
+</script>
+
+<!--
+    Phong Shading: Per-pixel shading
+-->
+
+<script id="fragmentShaderPhong" type="fragment">
+    #extension GL_OES_standard_derivatives : enable
+
+    precision mediump float;
+
+    varying vec3 vertexViewNormal;
+    varying vec3 vertexColor;
+
+    void main(void) {
+        // ambient lighting
+        float ambientIntensity = 0.3;
+        vec3 ambientColor = vertexColor * ambientIntensity;
+
+        // directional lighting
+        vec3 directionalLightColor = vec3(1, 1, 1);
+        vec3 directionalVector = normalize(vec3(0.85, 0.8, 0.75));
+        float directionalIntensity = max(dot(vertexViewNormal, directionalVector), 0.0);
+        vec3 directionalColor = directionalLightColor * vertexColor * directionalIntensity;
+
+        vec3 fragcolor = ambientColor + directionalColor;
+
+        gl_FragColor = vec4(fragcolor, 1.0);
+    }
+</script>
+
+<script id="vertexShaderPhong" type="vertex">
+    attribute vec3 aVertexPosition;
+    attribute vec3 aFrontColor;
+    attribute vec3 aVertexNormal;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+    
+    varying vec3 vertexViewPosition;
+    varying vec3 vertexViewNormal;
+    varying vec3 vertexColor;
+
+    void main(void) {
+        vertexViewPosition = (uMVMatrix * vec4(aVertexPosition, 1.0)).xyz;
+        vertexViewNormal = aVertexNormal;//(uMVMatrix * vec4(aVertexNormal, 1.0)).xyz;
+        vertexColor = aFrontColor;
         gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
     }
 </script>
@@ -73,6 +178,11 @@
 
         if (!gl) {
             alert("Could not initialise WebGL, sorry :-(");
+        }
+
+        // No derivative support
+        if(!gl.getExtension('OES_standard_derivatives')) {
+            throw 'extension not support'; 
         }
     }
 
@@ -115,8 +225,8 @@
     }
 
     function initShaders() {
-        var fragmentShader = getShader(gl, "fragmentShader");
-        var vertexShader   = getShader(gl, "vertexShader");
+        var fragmentShader = getShader(gl, "fragmentShaderPhong");
+        var vertexShader   = getShader(gl, "vertexShaderPhong");
 
         shaderProgram = gl.createProgram();
         gl.attachShader(shaderProgram, vertexShader);
@@ -133,6 +243,8 @@
         gl.enableVertexAttribArray(shaderProgram.vertexPositionAttribute);
         shaderProgram.vertexFrontColorAttribute = gl.getAttribLocation(shaderProgram, "aFrontColor");
         gl.enableVertexAttribArray(shaderProgram.vertexFrontColorAttribute);
+        shaderProgram.vertexNormalAttribute = gl.getAttribLocation(shaderProgram, "aVertexNormal");
+        gl.enableVertexAttribArray(shaderProgram.vertexNormalAttribute);
 
         shaderProgram.pMatrixUniform  = gl.getUniformLocation(shaderProgram, "uPMatrix");
         shaderProgram.mvMatrixUniform = gl.getUniformLocation(shaderProgram, "uMVMatrix");
@@ -222,6 +334,15 @@
                                0, 
                                0);
 
+        // Setup teapot front normal data
+        gl.bindBuffer(gl.ARRAY_BUFFER, teapotVertexNormalBuffer);
+        gl.vertexAttribPointer(shaderProgram.vertexNormalAttribute, 
+                               teapotVertexNormalBuffer.itemSize, 
+                               gl.FLOAT, 
+                               false, 
+                               0, 
+                               0);
+
         gl.drawArrays(gl.TRIANGLES, 0, teapotVertexPositionBuffer.numItems);
     }
 
@@ -258,6 +379,11 @@
 <body onload="webGLStart();">
     <canvas id="ICG-canvas" style="border: none;" width="1280" height="720"></canvas>
     <br/>
+    <select name="shading" id="shading">
+        <option value="flat">Flat</option>
+        <option value="gouraud" >Gouraud</option>
+        <option value="phong">Phong</option>
+    </select>
 </body>
 
 </html>
