@@ -1,0 +1,144 @@
+body {
+    width: 100vw;
+    background-color: white;
+}
+
+#title {
+    text-align: center;
+    width: 100%;
+    font-size: 20px;
+}
+
+#flex-container {
+    width: 100%;
+    display: flex;
+}
+
+#control-container {
+    width: calc(100vw - 1200px);
+    height: 720px;
+    text-align: center;
+    overflow: scroll;
+}
+
+.controls{
+    width: 100%;
+}
+
+
+#toggle-control-btn {
+    position: fixed;
+    bottom: 20px;
+    height: 20px;
+    font-family: "Roberto", sans-serif;
+    background-color: #d3d3d3;
+    border: 1px solid white;
+    border-radius: 5px;
+    width: 20%;
+    left: 50%;
+    margin-left: -10%;
+    cursor: pointer;
+}
+
+.shader-selector {
+    width: 85%;
+    margin: auto;
+    margin-bottom: 10px;
+    border: 1px solid gray;
+    border-radius: 5px;
+    font-size: 15px;
+}
+
+#selector-container {
+    width: 110px;
+    position: fixed;
+    text-align: center;
+}
+
+.select-title {
+    color: white;
+    width: 100%;
+}
+
+#model-selector {
+    width: 100%;
+    margin: auto;
+    margin-bottom: 10px;
+    border: 1px solid black;
+    font-size: 15px;
+    text-align: center;
+}
+
+#color-selector-container {
+    margin: auto;
+    margin-bottom: 10px;
+    border: 1px solid black;
+    font-size: 15px;
+    width: 100%;
+    text-align: center;
+}
+
+.color-selector {
+    width: 100%;
+}
+
+#rotate-button {
+    padding-right: 10px;
+    cursor: pointer;
+    width: 100px;
+    border: 1px solid black;
+    border-radius: 5px;
+    background-color: white;
+    text-align: center;
+}
+
+.sliderCollection {
+    width: 80%;
+    margin: auto;
+    margin-bottom: 10px;
+    border: 1px solid gray;
+    border-radius: 10px;
+    padding: 5px;
+}
+
+.slidercontainer {
+    margin-bottom: 5px;
+}
+
+.sliderValueDiv {
+    margin-top: 5px;
+    font-size: 15px;
+    width: 100%;
+    font-family: "Roberto", sans-serif;
+}
+
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;  
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+  }
+  
+  .slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%; 
+    background: black;
+    cursor: pointer;
+  }
+  
+  .slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: black;
+    cursor: pointer;
+}
