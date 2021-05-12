@@ -1,5 +1,5 @@
-transformValueDivs = [{}, {}, {}];
-transformValues = [{}, {}, {}];
+transformValueDivs = [];
+transformValues = [];
 
 function setAttributes(el, attrs) {
     for(var key in attrs) {
@@ -9,6 +9,8 @@ function setAttributes(el, attrs) {
 
 function initControls(i){
     console.log("Init controls!");
+    transformValueDivs.push({});
+    transformValues.push({});
     controlDiv = document.getElementById(`controls-${i}`);
     controlDiv.appendChild(createSliderCollection([""], "fov", i));
     controlDiv.appendChild(createSliderCollection([""], "specular order", i));

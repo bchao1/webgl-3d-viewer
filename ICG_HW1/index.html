@@ -347,46 +347,34 @@
 
     // GL, shaders
     var gl;
-    var shaderProgram = new Array(3);
+    var shaderProgram;
 
     // Geometry
-    var mvMatrix = new Array(3);
-    var pMatrix  = new Array(3);
-    var nMatrix = new Array(3);
-    var centerPosition = new Array(3);
+    var mvMatrix;
+    var pMatrix;
+    var nMatrix;
+    var centerPosition;
 
     // Lighting
-    var lightSource = new Array(3);
-    var lightColor = new Array(3);
-
-    var lightValues = new Array(3);
-
-    for(let i = 0; i < 3; i++) {
-        mvMatrix[i] = mat4.create();
-        pMatrix[i] = mat4.create();
-        nMatrix[i] = mat4.create();
-        lightSource[i] = vec3.create();
-        lightColor[i] = vec3.create();
-        lightValues[i] = [1.0, 1.0, 1.0];
-    }
-
-    var specularOrder = new Array(3);
-    var ambientColor = vec3.create();
+    var lightSource;
+    var lightColor;
+    var lightValues;
+    var specularOrder;
+    var ambientColor;
     var ambientIntensity = 0.1;
     var diffuseIntensity = 0.7;
     var specularIntensity = 0.3;
 
     // gl buffers
-    var dataVertexPositionBuffer = new Array(3);
-    var dataVertexNormalBuffer = new Array(3);
-    var dataVertexFrontColorBuffer = new Array(3);
+    var dataVertexPositionBuffer;
+    var dataVertexNormalBuffer;
+    var dataVertexFrontColorBuffer;
 
     // Animation
     var animateAngle = 0;
     var rotatePerSec = 0.0;
     var lastTime    = 0;
 
-    var modelNames = ["teapot", "kangaroo"];
     var shaderDicts = {
         "flat": {
             "vertex": "vertexShaderFlat",
@@ -401,6 +389,7 @@
             "fragment": "fragmentShaderPhong"
         },
     };
+    var modelNames;
 
     function initGL(canvas) {
         try {
@@ -501,6 +490,35 @@
         shaderProgram[i].diffuseIntensityUniform = gl.getUniformLocation(shaderProgram[i], "uDiffuseIntensity");
         shaderProgram[i].specularIntensityUniform = gl.getUniformLocation(shaderProgram[i], "uSpecularIntensity");
         
+    }
+
+    function initGlobalVariables() {
+        shaderProgram = new Array(modelNames.length);
+        mvMatrix = new Array(modelNames.length);
+        pMatrix  = new Array(modelNames.length);
+        nMatrix = new Array(modelNames.length);
+        centerPosition = new Array(modelNames.length);
+
+        // Lighting
+        lightSource = new Array(modelNames.length);
+        lightColor = new Array(modelNames.length);
+        lightValues = new Array(modelNames.length);
+
+        for(let i = 0; i < modelNames.length; i++) {
+            mvMatrix[i] = mat4.create();
+            pMatrix[i] = mat4.create();
+            nMatrix[i] = mat4.create();
+            lightSource[i] = vec3.create();
+            lightColor[i] = vec3.create();
+            lightValues[i] = [1.0, 1.0, 1.0];
+        }
+
+        specularOrder = new Array(modelNames.length);
+        ambientColor = vec3.create();
+
+        dataVertexPositionBuffer = new Array(modelNames.length);
+        dataVertexNormalBuffer = new Array(modelNames.length);
+        dataVertexFrontColorBuffer = new Array(modelNames.length);
     }
 
     function updateShader(i) {
@@ -633,7 +651,8 @@
         var request = new XMLHttpRequest();
         if(name === "teapot") request.open("GET", "./model/Teapot.json");
         else if(name === "kangaroo") request.open("GET", "./model/Kangaroo.json");
-        else if(name === "mercedes") request.open("GET", "./model/Mercedes.json");
+        else if(name === "bunny") request.open("GET", "./model/Bunny.json");
+        else if(name === "suzanne") request.open("GET", "./model/Suzanne.json");
         request.onreadystatechange = function () {
             if (request.readyState == 4) {
                 handleLoadedData(JSON.parse(request.responseText), i);
@@ -676,10 +695,12 @@
         mat4.translate(mvMatrix[i], [0, 0, -150]); // z translation must be same to have same scale!
         if(modelNames[i] === "kangaroo") {
             mat4.translate(mvMatrix[i], [-25, -10, 0]);
-        } else if(modelNames[i] === "mercedes") {
-            mat4.translate(mvMatrix[i], [25, -10, 0]);
+        } else if(modelNames[i] === "bunny") {
+            mat4.translate(mvMatrix[i], [0, -25, 0]);
         } else if(modelNames[i] === "teapot") {
             mat4.translate(mvMatrix[i], [0, 10, 0]);
+        } else if(modelNames[i] === "suzanne") {
+            mat4.translate(mvMatrix[i], [25, -10, 0]);
         }
         //mat4.translate(mvMatrix, centerPosition);
         mat4.translate(mvMatrix[i], [
@@ -700,9 +721,12 @@
         if(modelNames[i] === "kangaroo") {
             mat4.rotateX(mvMatrix[i], degToRad(270));
             mat4.scale(mvMatrix[i], [25, 25, 25]);
-        } else if(modelNames[i] === "mercedes") {
-            mat4.rotateX(mvMatrix[i], degToRad(270));
-            mat4.scale(mvMatrix[i], [2000, 2000, 2000]);
+        } else if(modelNames[i] === "bunny") { // actually 10000
+            mat4.rotateX(mvMatrix[i], degToRad(0));
+            mat4.scale(mvMatrix[i], [8, 8, 8]);
+        } else if(modelNames[i] === "suzanne") { // actually 10000
+            mat4.rotateX(mvMatrix[i], degToRad(0));
+            mat4.scale(mvMatrix[i], [10, 10, 10]);
         }
         mat4.translate(mvMatrix[i], centerPosition[i]);
         
@@ -712,7 +736,7 @@
     }
 
     function setupLightings(i) {
-        vec3.set([1.0, 1.0, 1.0], ambientColor);
+        vec3.set([1.0, 1.0, 1.0], ambientColor); // white ambient light
         specularOrder[i] = transformValues[i]["specular order"];
 
         vec3.set(lightValues[0], lightColor[0]); // R
@@ -800,10 +824,12 @@
     }
 
     function webGLStart() {
-        modelNames = ["teapot", "kangaroo", "mercedes"];
-        var canvas = document.getElementById("ICG-canvas");
+        modelNames = ["teapot", "kangaroo", "suzanne", "bunny"];
+        initGlobalVariables();
 
+        var canvas = document.getElementById("ICG-canvas");
         initGL(canvas);
+
         for(let i = 0; i < modelNames.length; i++) initControls(i);
         for(let i = 0; i < modelNames.length; i++) initShaders("flat", i);
         for(let i = 0; i < modelNames.length; i++) loadData(modelNames[i], i);
@@ -811,6 +837,7 @@
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);
         gl.enable(gl.BACK);  // backface culling
+        //gl.cullFace(gl.FRONT_AND_BACK);
 
         tick();
     }
@@ -863,6 +890,19 @@
                     <option value="phong">Phong</option>
                 </select>
             </div>
+            <div class="controls" id="controls-3">
+                <select 
+                    name="shader-selector-3" 
+                    id="shader-selector-3" 
+                    class="shader-selector" 
+                    onchange="updateShader(3)"
+                    autocomplete="off"
+                >
+                    <option selected value="flat">Flat</option>
+                    <option value="gouraud">Gouraud</option>
+                    <option value="phong">Phong</option>
+                </select>
+            </div>
         </div>
         <div id="selector-container">
             <div class="select-title">Toggle rotation</div>
@@ -877,7 +917,8 @@
             >
                 <option selected value="teapot">Teapot</option>
                 <option value="kangaroo">Kangaroo</option>
-                <option value="mercedes">Mercedes</option>
+                <option value="bunny">Bunny</option>
+                <option value="suzanne">Suzanne</option>
             </select>
             <div class="select-title">Light colors</div>
             <div id="color-selector-container">

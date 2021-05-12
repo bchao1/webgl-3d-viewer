@@ -1,6 +1,7 @@
 body {
     width: 100vw;
     background-color: white;
+    font-family: "Roboto";
 }
 
 #title {
@@ -30,7 +31,6 @@ body {
     position: fixed;
     bottom: 20px;
     height: 20px;
-    font-family: "Roberto", sans-serif;
     background-color: #d3d3d3;
     border: 1px solid white;
     border-radius: 5px;
@@ -109,7 +109,6 @@ body {
     margin-top: 5px;
     font-size: 15px;
     width: 100%;
-    font-family: "Roberto", sans-serif;
 }
 
 
