@@ -28,7 +28,13 @@
 |![flat](./imgs/flat-close.png)|![gouraud](./imgs/gouraud-close.png)|![phong](./imgs/phong-close.png)|
 
 # Phong illumination model
+> "Suzanne" a.k.a Blender Monkey.
+
 |Ambient|Diffuse|Specular|Full|
 |--|--|--|--|
 |![ambient](./imgs/ambient.png)|![diffuse](./imgs/diffuse.png)|![specular](./imgs/specular.png)|![full](./imgs/full.png)|
+
+|Low specular order (metal-like)|High specular order (glossy)|
+|--|--|
+|![spec-low](./imgs/spec-low.png)|![spec-high](./imgs/spec-high.png)|
 
