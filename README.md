@@ -25,3 +25,4 @@
 |Flat|Gouraud|Phong|
 |---|---|---|
 |![flat](./imgs/flat.png)|![gouraud](./imgs/gouraud.png)|![phong](./imgs/phong.png)|
+|![flat](./imgs/flat-close.png)|![gouraud](./imgs/gouraud-close.png)|![phong](./imgs/phong-close.png)|
