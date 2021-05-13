@@ -1,13 +1,5 @@
-# 109-2 Interactive Computer Graphics
+# 3D Viewer
 
-## HW1
+3D viewer in WebGL and pure Javascript.
 
-### Open `index.html` using VSCode
-
-```
-CMD + Shift + B
-```
-
-Check `.vscode/tasks.json` to change configurations.
-   
-Configure browser: [Link](https://www.webucator.com/blog/2016/06/launch-files-browser-visual-studio-code/).
+![Viewer](./imgs/viewer.png)
