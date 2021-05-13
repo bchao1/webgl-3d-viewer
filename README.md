@@ -18,3 +18,10 @@
     - 3D shear
 - Controllable camera:
     - FOV (field of view)
+- Controllable models
+- Toggle Y-axis rotation animation
+
+## Phong illumination model
+|Flat|Gouraud|Phong|
+|---|---|---|
+|![flat](./imgs/flat.png)|![gouraud](./imgs/gouraud.png)|![phong](./imgs/phong.png)|
