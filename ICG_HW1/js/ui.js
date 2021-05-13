@@ -13,6 +13,9 @@ function initControls(i){
     transformValues.push({});
     controlDiv = document.getElementById(`controls-${i}`);
     controlDiv.appendChild(createSliderCollection([""], "fov", i));
+    controlDiv.appendChild(createSliderCollection([""], "ambient intensity", i));
+    controlDiv.appendChild(createSliderCollection([""], "diffuse intensity", i));
+    controlDiv.appendChild(createSliderCollection([""], "specular intensity", i));
     controlDiv.appendChild(createSliderCollection([""], "specular order", i));
     controlDiv.appendChild(createSliderCollection(["X", "Y", "Z"], "translate", i));
     controlDiv.appendChild(createSliderCollection(["X", "Y", "Z"], "rotate", i));
@@ -38,19 +41,24 @@ function createSliderCollection(sliderIndex, name, index) {
         else if(name.includes("shear")) sliderCollection.appendChild(createSingleSlider(-2, 2, 0, name.concat(sliderIndex[i]), index));
         else if(name == "fov") sliderCollection.appendChild(createSingleSlider(10, 170, 45, name.concat(sliderIndex[i]), index));
         else if(name == "specular order") sliderCollection.appendChild(createSingleSlider(1, 300, 100, name.concat(sliderIndex[i]), index));
+        else if(name == "ambient intensity") sliderCollection.appendChild(createSingleSlider(0.0, 10, 1, name.concat(sliderIndex[i]), index));
+        else if(name == "diffuse intensity") sliderCollection.appendChild(createSingleSlider(0.0, 10, 5, name.concat(sliderIndex[i]), index));
+        else if(name == "specular intensity") sliderCollection.appendChild(createSingleSlider(0.0, 10, 3, name.concat(sliderIndex[i]), index));
     }
     return sliderCollection;
 }
 
 function createSingleSlider(min, max, value, id, index) {
+    let displayValue = value;
+    if(id.includes("intensity")) displayValue /= 10;
     sliderDiv = document.createElement("div");
     sliderDiv.className = "slidercontainer";
     sliderInput = document.createElement("input");
     sliderValueDiv = document.createElement("div");
     sliderValueDiv.className = "sliderValueDiv";
-    sliderValueDiv.innerHTML = `${id}: ${value}`;
+    sliderValueDiv.innerHTML = `${id}: ${displayValue}`;
     transformValueDivs[index][id] = sliderValueDiv;
-    transformValues[index][id] = value
+    transformValues[index][id] = displayValue;
 
     setAttributes(sliderInput, {
         "type": "range",
@@ -60,15 +68,19 @@ function createSingleSlider(min, max, value, id, index) {
         "class": "slider",
         "id": id,
         "step": 0.1,
+        "autocomplete": "off"
     })
+
     sliderInput.addEventListener("input", e => {
-        transformValueDivs[index][id].innerHTML = `${id}: `.concat((e.target.value).toString());
-        transformValues[index][id] = e.target.value;
+        let value = e.target.value;
+        if(id.includes("intensity")) value /= 10;
+        transformValueDivs[index][id].innerHTML = `${id}: `.concat((value).toString());
+        transformValues[index][id] = value;
         // If slider controls FOV, change for all objects.
         if(id.includes("fov")) {
             for(let i = 0; i < transformValues.length; i++) {
-                transformValueDivs[i][id].innerHTML = `${id}: `.concat((e.target.value).toString());
-                transformValues[i][id] = e.target.value;
+                transformValueDivs[i][id].innerHTML = `${id}: `.concat((value).toString());
+                transformValues[i][id] = value;
             }
         }
     });
