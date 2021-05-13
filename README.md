@@ -27,7 +27,7 @@
 |![flat](./imgs/flat.png)|![gouraud](./imgs/gouraud.png)|![phong](./imgs/phong.png)|
 |![flat](./imgs/flat-close.png)|![gouraud](./imgs/gouraud-close.png)|![phong](./imgs/phong-close.png)|
 
-# Phong illumination model
+## Phong illumination model
 > "Suzanne" a.k.a Blender Monkey.
 
 |Ambient|Diffuse|Specular|Full|
@@ -37,4 +37,12 @@
 |Low specular order (metal-like)|High specular order (glossy)|
 |--|--|
 |![spec-low](./imgs/spec-low.png)|![spec-high](./imgs/spec-high.png)|
+
+## Model transformations
+> "Stanford Bunny"
+
+|Original|Rotate|Translate|Scale|Shear|
+|--|--|--|--|--|
+|![orig](./imgs/orig.png)|![rotate](./imgs/rotate.png)|![translate](./imgs/translate.png)|![scale](./imgs/scale.png)|![shear](./imgs/shear.png)|
+
 
