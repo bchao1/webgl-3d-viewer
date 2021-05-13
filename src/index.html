@@ -498,18 +498,21 @@
         nMatrix = new Array(modelNames.length);
         centerPosition = new Array(modelNames.length);
 
-        // Lighting
-        lightSource = new Array(modelNames.length);
-        lightColor = new Array(modelNames.length);
-        lightValues = new Array(modelNames.length);
+        // Lighting. 3 light sources
+        lightSource = new Array(3);
+        lightColor = new Array(3);
+        lightValues = new Array(3);
+
+        for(let i = 0; i < 3; i++) {
+            lightSource[i] = vec3.create();
+            lightColor[i] = vec3.create();
+            lightValues[i] = [1.0, 1.0, 1.0];
+        }
 
         for(let i = 0; i < modelNames.length; i++) {
             mvMatrix[i] = mat4.create();
             pMatrix[i] = mat4.create();
             nMatrix[i] = mat4.create();
-            lightSource[i] = vec3.create();
-            lightColor[i] = vec3.create();
-            lightValues[i] = [1.0, 1.0, 1.0];
         }
 
         specularOrder = new Array(modelNames.length);
@@ -656,6 +659,7 @@
         else if(name === "bunny") request.open("GET", "./model/Bunny.json");
         else if(name === "suzanne") request.open("GET", "./model/Suzanne.json");
         else if(name === "buddha") request.open("GET", "./model/Buddha.json");
+        else if(name === "own") request.open("GET", "./model/Own.json");
         request.onreadystatechange = function () {
             if (request.readyState == 4) {
                 handleLoadedData(JSON.parse(request.responseText), i);
@@ -726,17 +730,17 @@
         if(modelNames[i] === "kangaroo") {
             mat4.rotateX(mvMatrix[i], degToRad(270));
             mat4.scale(mvMatrix[i], [25, 25, 25]);
-        } else if(modelNames[i] === "bunny") { // actually 10000
+        } else if(modelNames[i] === "bunny") { 
             mat4.rotateX(mvMatrix[i], degToRad(0));
             mat4.scale(mvMatrix[i], [300, 300, 300]);
-        } else if(modelNames[i] === "suzanne") { // actually 10000
+        } else if(modelNames[i] === "suzanne") { 
             mat4.rotateX(mvMatrix[i], degToRad(0));
             mat4.scale(mvMatrix[i], [20, 20, 20]);
-        } else if(modelNames[i] === "buddha") { // actually 10000
+        } else if(modelNames[i] === "buddha") { 
             mat4.rotateX(mvMatrix[i], degToRad(270));
             mat4.scale(mvMatrix[i], [0.25, 0.25, 0.25]);
         } 
-        mat4.translate(mvMatrix[i], centerPosition[i]);
+        mat4.translate(mvMatrix[i], centerPosition[i]); // translate to center
         
         // Setup Normal Matrix
         for(var j = 0; j < mvMatrix[i].length; j++) nMatrix[i][j] = mvMatrix[i][j];
@@ -836,7 +840,8 @@
     }
 
     function webGLStart() {
-        modelNames = ["teapot", "bunny", "suzanne", "buddha"];
+        modelNames = ["own"];
+        //modelNames = ["buddha", "teapot", "bunny", "suzanne"];
         initGlobalVariables();
 
         var canvas = document.getElementById("ICG-canvas");
@@ -871,11 +876,6 @@
                 onchange="updateControl(this)"
                 autocomplete="off"
             >
-                <option selected value="teapot">Teapot</option>
-                <!--<option value="kangaroo">Kangaroo</option>-->
-                <option value="bunny">Bunny</option>
-                <option value="suzanne">Suzanne</option>
-                <option value="buddha">Buddha</option>
             </select>
             <div class="select-title">Light colors</div>
             <div id="color-selector-container">

@@ -34,6 +34,12 @@ function initControls(i){
     //    else controlDiv.style.visibility = "visible";
     //});
     document.getElementById("control-container").appendChild(controlDiv);
+    let modelOptionDiv = document.createElement("option");
+    setAttributes(modelOptionDiv, {
+        "value": modelNames[i],
+    });
+    modelOptionDiv.innerHTML = modelNames[i];
+    document.getElementById("model-selector").appendChild(modelOptionDiv);
 }
 
 function createShaderSelector(i) {
@@ -98,7 +104,6 @@ function createSliderCollection(sliderIndex, name, index) {
     }
     return sliderCollection;
 }
-
 function createSingleSlider(min, max, value, id, index) {
     let displayValue = value;
     if(id.includes("intensity")) displayValue /= 10;
