@@ -45,4 +45,10 @@
 |--|--|--|--|--|
 |![orig](./imgs/orig.png)|![rotate](./imgs/rotate.png)|![translate](./imgs/translate.png)|![scale](./imgs/scale.png)|![shear](./imgs/shear.png)|
 
+## Using your own model
+
+You can modify line 843,844 in `index.html` to use your own model. Concretely, comment out the predefined models `modelNames = ["buddha", "teapot", "bunny", "suzanne"];` and change to `modelNames = ["own"];`. THe program will load the `./src/model/Own.json` file and render it.
+   
+To generate the `Own.json` file, use the `obj2json.py` script in `./src/raw`. The script loads a `.obj` file and (optinally) a texture atlas and outputs the json file to `./src/model/Own.json`. Modify `input path` and `texture_path` inside the script.
+
 
