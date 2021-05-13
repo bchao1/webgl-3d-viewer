@@ -6,7 +6,6 @@
 
 <script type="text/javascript" src="./js/glMatrix-0.9.5.min.js"></script>
 <script type="text/javascript" src="./js/webgl-utils.js"></script>
-<script type="text/javascript" src="./js/ui.js"></script>
 <link rel="stylesheet" href="./css/index.css">
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet"> 
@@ -858,65 +857,9 @@
 </head>
 
 <body onload="webGLStart();">
-    <div id="title">
-        Shading and Transformations
-    </div>
     <div id="flex-container">
         <canvas id="ICG-canvas" height="720" width="1200"></canvas>
-        <div id="control-container">
-            <div class="controls" id="controls-0">
-                <select 
-                    name="shader-selector-0" 
-                    id="shader-selector-0" 
-                    class="shader-selector" 
-                    onchange="updateShader(0)"
-                    autocomplete="off"
-                >
-                    <option selected value="flat">Flat</option>
-                    <option value="gouraud">Gouraud</option>
-                    <option value="phong">Phong</option>
-                </select>
-            </div>
-            <div class="controls" id="controls-1">
-                <select 
-                    name="shader-selector-1" 
-                    id="shader-selector-1" 
-                    class="shader-selector" 
-                    onchange="updateShader(1)"
-                    autocomplete="off"
-                >
-                    <option selected value="flat">Flat</option>
-                    <option value="gouraud">Gouraud</option>
-                    <option value="phong">Phong</option>
-                </select>
-            </div>
-            <div class="controls" id="controls-2">
-                <select 
-                    name="shader-selector-2" 
-                    id="shader-selector-2" 
-                    class="shader-selector" 
-                    onchange="updateShader(2)"
-                    autocomplete="off"
-                >
-                    <option selected value="flat">Flat</option>
-                    <option value="gouraud">Gouraud</option>
-                    <option value="phong">Phong</option>
-                </select>
-            </div>
-            <div class="controls" id="controls-3">
-                <select 
-                    name="shader-selector-3" 
-                    id="shader-selector-3" 
-                    class="shader-selector" 
-                    onchange="updateShader(3)"
-                    autocomplete="off"
-                >
-                    <option selected value="flat">Flat</option>
-                    <option value="gouraud">Gouraud</option>
-                    <option value="phong">Phong</option>
-                </select>
-            </div>
-        </div>
+        <div id="control-container"></div>
         <div id="selector-container">
             <div class="select-title">Toggle rotation</div>
             <div id="rotate-button" onclick="updateRotate()">On</div>
@@ -967,5 +910,5 @@
         </div>
     </div>
 </body>
-
+<script type="text/javascript" src="./js/ui.js"></script>
 </html>

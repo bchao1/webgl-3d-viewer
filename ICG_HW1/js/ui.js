@@ -11,7 +11,12 @@ function initControls(i){
     console.log("Init controls!");
     transformValueDivs.push({});
     transformValues.push({});
-    controlDiv = document.getElementById(`controls-${i}`);
+    controlDiv = document.createElement("div");
+    setAttributes(controlDiv, {
+        "class": "controls",
+        "id": `controls-${i}`
+    });
+    controlDiv.appendChild(createShaderSelector(i));
     controlDiv.appendChild(createSliderCollection([""], "fov", i));
     controlDiv.appendChild(createSliderCollection([""], "ambient intensity", i));
     controlDiv.appendChild(createSliderCollection([""], "diffuse intensity", i));
@@ -28,7 +33,53 @@ function initControls(i){
     //    if(controlDiv.style.visibility == "visible") controlDiv.style.visibility = "hidden";
     //    else controlDiv.style.visibility = "visible";
     //});
+    document.getElementById("control-container").appendChild(controlDiv);
+}
 
+function createShaderSelector(i) {
+    /*
+                <select 
+                    name="shader-selector-3" 
+                    id="shader-selector-3" 
+                    class="shader-selector" 
+                    onchange="updateShader(3)"
+                    autocomplete="off"
+                >
+                    <option selected value="flat">Flat</option>
+                    <option value="gouraud">Gouraud</option>
+                    <option value="phong">Phong</option>
+                </select>
+    */
+    let shaderSelectDiv = document.createElement("select");
+    setAttributes(shaderSelectDiv, {
+        "name": `shader-selector-${i}`,
+        "id": `shader-selector-${i}`,
+        "class": `shader-selector`,
+        "autocomplete": "off"
+    });
+    shaderSelectDiv.addEventListener("change", e => {
+        updateShader(i);
+    })
+    let option1 = document.createElement("option");
+    let option2 = document.createElement("option");
+    let option3 = document.createElement("option");
+    setAttributes(option1, {
+        "value": "flat",
+        "selected": "selected"
+    });
+    setAttributes(option2, {
+        "value": "gouraud"
+    });
+    setAttributes(option3, {
+        "value": "phong"
+    });
+    option1.innerHTML = "Flat";
+    option2.innerHTML = "Gouraud";
+    option3.innerHTML = "Phong";
+    shaderSelectDiv.appendChild(option1);
+    shaderSelectDiv.appendChild(option2);
+    shaderSelectDiv.appendChild(option3);
+    return shaderSelectDiv;
 }
 
 function createSliderCollection(sliderIndex, name, index) {
@@ -74,12 +125,14 @@ function createSingleSlider(min, max, value, id, index) {
     sliderInput.addEventListener("input", e => {
         let value = e.target.value;
         if(id.includes("intensity")) value /= 10;
-        transformValueDivs[index][id].innerHTML = `${id}: `.concat((value).toString());
+        
+        let displayValue = parseFloat(value).toFixed(2);
+        transformValueDivs[index][id].innerHTML = `${id}: `.concat((displayValue).toString());
         transformValues[index][id] = value;
         // If slider controls FOV, change for all objects.
         if(id.includes("fov")) {
             for(let i = 0; i < transformValues.length; i++) {
-                transformValueDivs[i][id].innerHTML = `${id}: `.concat((value).toString());
+                transformValueDivs[i][id].innerHTML = `${id}: `.concat((displayValue).toString());
                 transformValues[i][id] = value;
             }
         }
