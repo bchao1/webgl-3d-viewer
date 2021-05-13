@@ -6,7 +6,7 @@ import numpy as np
 
 output_path = "../model/Own.json" # don't change!
 
-input_path = "./dragon.obj" # modify input path
+input_obj_path = "./happy.obj" # modify input path
 texture_path = None#"./bunny2/texture1.jpg" # modify input path
 
 
@@ -20,7 +20,7 @@ def normalize_vertices(vertices):
     vertices *= 50
     return vertices
 
-mesh = trimesh.load(input_path, process=False)
+mesh = trimesh.load(input_obj_path, process=False)
 print("num vertices: ", mesh.vertices.shape)
 print("num vertex normals: ", mesh.vertex_normals.shape)
 faces = mesh.faces.reshape(mesh.faces.size)
