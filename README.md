@@ -21,8 +21,14 @@
 - Controllable models
 - Toggle Y-axis rotation animation
 
-## Phong illumination model
+## Shadings
 |Flat|Gouraud|Phong|
-|---|---|---|
+|--|--|--|
 |![flat](./imgs/flat.png)|![gouraud](./imgs/gouraud.png)|![phong](./imgs/phong.png)|
 |![flat](./imgs/flat-close.png)|![gouraud](./imgs/gouraud-close.png)|![phong](./imgs/phong-close.png)|
+
+# Phong illumination model
+|Ambient|Diffuse|Specular|Full|
+|--|--|--|--|
+|![ambient](./imgs/ambient.png)|![diffuse](./imgs/diffuse.png)|![specular](./imgs/specular.png)|![full](./imgs/full.png)|
+
